@@ -77,7 +77,23 @@ function setData() {
       }
   }
   if(pageState.nowGraTime=="month"){
-    
+    var tem=true;
+    var value=0;
+    var j=1;
+    var name = "2016-第"+j+"月";
+    for(var x in aqiSourceData[nowCityName]){
+      if(tem==true){
+      var flag=x[5]+x[6];
+      tem=false;
+      }
+      if(flag != (x[5]+x[6])){
+        tem=true;
+        value=0;
+        j++;name="2016-第"+j+"月";
+      }
+      value=value+aqiSourceData[nowCityName][x];
+      chartData[name]=value;
+    }
   }
 }
 /**
