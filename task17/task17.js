@@ -21,7 +21,7 @@ function getDateStr(dat) {
 function randomBuildData(seed) {
   var returnData = {};
   var dat = new Date("2016-01-01");
-  var datStr = ''
+  var datStr = '';
   for (var i = 1; i < 92; i++) {
     datStr = getDateStr(dat);
     returnData[datStr] = Math.ceil(Math.random() * seed);
@@ -44,6 +44,7 @@ var aqiSourceData = {
 
 // 用于渲染图表的数据
 var chartData = {};
+var nowCityName;
 
 // 记录当前页面的表单选项
 var pageState = {
@@ -54,7 +55,6 @@ var pageState = {
 function setData() {
   chartData = {};
   var i=0;
-  var nowCityName
   for (nowCityName in aqiSourceData){
     if (i==pageState.nowSelectCity){
       break;
@@ -75,17 +75,46 @@ function setData() {
         chartData[name]=value;
         i++;
       }
-
   }
   if(pageState.nowGraTime=="month"){
-
+    
   }
 }
 /**
  * 渲染图表
  */
 function renderChart() {
-  
+  var cityTable = document.getElementsByClassName('city-table')[0];
+  var cityTitle = cityTable.getElementsByTagName('legend')[0];
+  cityTitle.innerHTML=nowCityName;
+  var maxn=0;
+  var number=0;
+  for(var x in chartData){
+    if(chartData[x]>maxn){
+      maxn = chartData[x];
+    }
+    number++;
+    }
+    width = (document.body.clientWidth/number*0.8).toString()+"px";
+  var dataMumber = document.getElementsByClassName('container')[0];
+  dataMumber.innerHTML="";
+  var j=0;
+  for(var x in chartData){
+    distant=((document.body.clientWidth/number*0.9)*j).toString()+"px";
+    div="<div style='position:absolute;bottom:0px;left: "+distant+";width:"+width+";height:"+(chartData[x]/maxn*100).toString()+"%;"+"display: inline-block; background-color: black;'>&nbsp;</div>";
+    j++;
+    dataMumber.innerHTML=dataMumber.innerHTML+div;
+  }
+  // dataMumber.innerHTML="<div style='width: 14.8242px; height: 26.4%; display: inline-block; background-color: black;'>&nbsp;</div>"
+  // for(var x in chartData){
+  //   dataMumber.appendChild(div);
+  //   div.innerHTML="&nbsp;";
+  //   div.style.width=width;
+  //   div.style.height=(chartData[x]/maxn*100).toString()+"%";
+  //   div.style.backgroundColor="black";
+  //   div.style.display="inline-block";
+  // }
+
 }
 
 /**
@@ -107,6 +136,7 @@ function citySelectChange() {
   // 确定是否选项发生了变化
   // 设置对应数据
   pageState.nowSelectCity = this.selectedIndex;
+
 
   // 调用图表渲染函数
   setData();
